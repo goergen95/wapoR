@@ -67,7 +67,11 @@ In its current state, the package mainly supports products from the
 WAPOR collections. For some other collection it is also possible to
 query and download raster datasets. However, for some of the collections
 errors will be returned if queried. Currently, you might run into errors
-for these collections: - C2ATLAS - DLMF - NASA - NATURAL\_EARTH
+for these collections: 
+ - C2ATLAS 
+ - DLMF 
+ - NASA 
+ - NATURAL\_EARTH
 
 To query the available products within the collections we can run
 \`wapor\_products(“<collection_name>”).
