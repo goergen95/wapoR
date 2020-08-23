@@ -140,136 +140,149 @@ wapor_queryRaster <- function(collection = NULL,
   token = wapor_signin(APIkey)
   token_x = paste("Bearer ", token)
 
-  for(step in timesteps){
+  # expanding multiple values of dimensions to a grid
+  if (length(dim_names)>0){
+    dim_grid = expand.grid(dimensions, stringsAsFactors = FALSE)
+  } else {
+    dim_grid = data.frame(empty = "frame") # create empty data frame in case there is no dimension
+  }
 
-    if(class(timesteps) == "character"){
-      date_name  = as.Date(str_sub(step,2,11))
-      if(temp_dim == "YEAR"){
-        date_name = str_sub(date_name, 1, 4)
-      } else if(temp_dim == "MONTH") {
-        date_name = str_sub(date_name, 1, 7)
+  for(step in timesteps){ # iterate through time steps
+    for(i in 1:nrow(dim_grid)){ # iterate through dimension grid
+      if(length(dim_names)>0){ # only make new dimension variable when there are dimensions
+        dimensions = as.list(dim_grid[i,])
+        names(dimensions) = names(dim_grid)
       }
-      date_name = paste(date_name, temp_dim, sep = "_")
-      if(length(dim_names)>0){
-        tmp_filename = paste(product, paste(unlist(dimensions), date_name, sep = "_"), "clipped.tif", sep = "_")
-        outname = paste0(file.path(outdir, paste(product, paste(unlist(dimensions), collapse = "_"), date_name, sep = "_")), ".tif")
+
+      if(class(timesteps) == "character"){
+        date_name  = as.Date(str_sub(step,2,11))
+        if(temp_dim == "YEAR"){
+          date_name = str_sub(date_name, 1, 4)
+        } else if(temp_dim == "MONTH") {
+          date_name = str_sub(date_name, 1, 7)
+        }
+        date_name = paste(date_name, temp_dim, sep = "_")
+        if(length(dim_names)>0){
+          tmp_filename = paste(product, paste(unlist(dimensions), date_name, sep = "_"), "clipped.tif", sep = "_")
+          outname = paste0(file.path(outdir, paste(product, paste(unlist(dimensions), collapse = "_"), date_name, sep = "_")), ".tif")
+        } else {
+          tmp_filename = paste(product, date_name, "clipped.tif", sep = "_")
+          outname = paste0(file.path(outdir, paste(product, date_name, sep = "_")), ".tif")
+        }
       } else {
-        tmp_filename = paste(product, date_name, "clipped.tif", sep = "_")
-        outname = paste0(file.path(outdir, paste(product, date_name, sep = "_")), ".tif")
-      }
-    } else {
-      if(length(dim_names)>0){
-        tmp_filename = paste(product, paste(unlist(dimensions), collapse = "_"), "clipped.tif", sep = "_")
-        outname = paste0(file.path(outdir, paste(product, paste(unlist(dimensions), collapse = "_"), sep = "_")), ".tif")
-      } else {
-        tmp_filename = paste(product, "clipped.tif", sep = "_")
-        outname = paste0(file.path(outdir, paste(product, sep = "_")), ".tif")
+        if(length(dim_names)>0){
+          tmp_filename = paste(product, paste(unlist(dimensions), collapse = "_"), "clipped.tif", sep = "_")
+          outname = paste0(file.path(outdir, paste(product, paste(unlist(dimensions), collapse = "_"), sep = "_")), ".tif")
+        } else {
+          tmp_filename = paste(product, "clipped.tif", sep = "_")
+          outname = paste0(file.path(outdir, paste(product, sep = "_")), ".tif")
+        }
+
       }
 
-    }
+      # skip downlaod when file exists
+      if(file.exists(outname)) next
 
-    # skip downlaod when file exists
-    if(file.exists(outname)) next
-
-    # prepare dimension block of query json
-    params = list()
-    if(length(dim_names>0)){
-      for(x in 1:length(dimensions)){
-        value = dimensions[[x]]
-        code = names(dimensions[x])
-        para =  list(code = code, values = list(value))
-        params = append(params, list(para))
+      # prepare dimension block of query json
+      params = list()
+      if(length(dim_names>0)){
+        for(x in 1:length(dimensions)){
+          value = dimensions[[x]]
+          code = names(dimensions[x])
+          para =  list(code = code, values = list(value))
+          params = append(params, list(para))
+        }
       }
-    }
 
-    if(timesteps[1] !=  1){
-      t_dim = list(
-        list(code = temp_dim,
-             values = list(step)))
-      params = append(params, t_dim)
-    }
+      if(timesteps[1] !=  1){
+        t_dim = list(
+          list(code = temp_dim,
+               values = list(step)))
+        params = append(params, t_dim)
+      }
 
-    payload =  list(type = 'CropRaster',
-                    params = list(
-                      properties = list(
-                        outputFileName = tmp_filename,
-                        cutline = cutline,
-                        tiled = tiled,
-                        compressed = compressed,
-                        overviews = overviews
-                      ),
-                      cube = list(
-                        code = product,
-                        workspaceCode = collection,
-                        language = "en"
-                      ),
-                      dimensions =  params,
-                      measures = list(measure)
-                    )
-    )
+      payload =  list(type = 'CropRaster',
+                      params = list(
+                        properties = list(
+                          outputFileName = tmp_filename,
+                          cutline = cutline,
+                          tiled = tiled,
+                          compressed = compressed,
+                          overviews = overviews
+                        ),
+                        cube = list(
+                          code = product,
+                          workspaceCode = collection,
+                          language = "en"
+                        ),
+                        dimensions =  params,
+                        measures = list(measure)
+                      )
+      )
 
-    polygon = list(
-      shape = list(
-        type = "Polygon",
-        coordinates = list(
-          list(list(extent[1], extent[2]),
-               list(extent[1], extent[4]),
-               list(extent[3], extent[4]),
-               list(extent[3], extent[2]),
-               list(extent[1], extent[2]))
-        )))
-    payload$params = append(payload$params, polygon)
+      polygon = list(
+        shape = list(
+          type = "Polygon",
+          coordinates = list(
+            list(list(extent[1], extent[2]),
+                 list(extent[1], extent[4]),
+                 list(extent[3], extent[4]),
+                 list(extent[3], extent[2]),
+                 list(extent[1], extent[2]))
+          )))
+      payload$params = append(payload$params, polygon)
 
-    payload = toJSON(payload, pretty = T, auto_unbox = T)
+      payload = toJSON(payload, pretty = T, auto_unbox = T)
 
-    # clean payload
-    payload = str_replace_all(payload, '"true"', 'true')
-    payload = str_replace_all(payload, '"false"', 'false')
-    # cat(payload)
+      # clean payload
+      payload = str_replace_all(payload, '"true"', 'true')
+      payload = str_replace_all(payload, '"false"', 'false')
+      # cat(payload)
 
-    response =  POST(url = queryurl,
-                     add_headers(Accept = "application/json",
-                                 Authorization = token_x,
-                                 "Content-type" = "application/json;charset=UTF-8"),
-                     body = payload,
-                     encode = "json",
-                     ua)
-    res = content(response)
-    if(res$status == 200){
-      job_url = res$response$links[[1]]$href
-      job_response = GET(job_url, add_headers(Accept = "application/json",
-                                              Authorization = token_x,
-                                              "Content-type" = "application/json;charset=UTF-8"),
-                         ua)
-      job_status = content(job_response)$response$status
-
-      while (job_status %in% c("RUNNING","WAITING")){
-        Sys.sleep(sleep_time)
-        job_response = GET(job_url,
-                           add_headers(Accept = "application/json",
-                                       Authorization = token_x,
-                                       "Content-type" = "application/json;charset=UTF-8"),
+      response =  POST(url = queryurl,
+                       add_headers(Accept = "application/json",
+                                   Authorization = token_x,
+                                   "Content-type" = "application/json;charset=UTF-8"),
+                       body = payload,
+                       encode = "json",
+                       ua)
+      res = content(response)
+      if(res$status == 200){
+        job_url = res$response$links[[1]]$href
+        job_response = GET(job_url, add_headers(Accept = "application/json",
+                                                Authorization = token_x,
+                                                "Content-type" = "application/json;charset=UTF-8"),
                            ua)
         job_status = content(job_response)$response$status
-      }
 
-      if(job_status == "COMPLETED WITH ERRORS"){
-        check_status(job_response)
-      } else {
-        job_response = GET(job_url,
-                           add_headers(Accept = "application/json",
-                                       Authorization = token_x,
-                                       "Content-type" = "application/json;charset=UTF-8"),
-                           ua)
-        job_result = content(job_response)$response$output$downloadUrl
-        GET(url = job_result, add_headers(Accept = "application/json",
-                                          Authorization = token_x,
-                                          "Content-type" = "application/json;charset=UTF-8"),
-            ua,
-            write_disk(outname, overwrite = T))
+        while (job_status %in% c("RUNNING","WAITING")){
+          Sys.sleep(sleep_time)
+          job_response = GET(job_url,
+                             add_headers(Accept = "application/json",
+                                         Authorization = token_x,
+                                         "Content-type" = "application/json;charset=UTF-8"),
+                             ua)
+          job_status = content(job_response)$response$status
+        }
+
+        if(job_status == "COMPLETED WITH ERRORS"){
+          check_status(job_response)
+        } else {
+          job_response = GET(job_url,
+                             add_headers(Accept = "application/json",
+                                         Authorization = token_x,
+                                         "Content-type" = "application/json;charset=UTF-8"),
+                             ua)
+          job_result = content(job_response)$response$output$downloadUrl
+          GET(url = job_result, add_headers(Accept = "application/json",
+                                            Authorization = token_x,
+                                            "Content-type" = "application/json;charset=UTF-8"),
+              ua,
+              write_disk(outname, overwrite = T))
+        }
+      } else { # if status different from 200
+        check_status(response)
       }
-    } else { # if status different from 200
-      check_status(response)
     }
   }
 

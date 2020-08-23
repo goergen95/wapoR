@@ -10,6 +10,7 @@ Description: The packages queries the FAO GISManager API at <https://io.apps.fao
      for raster datasets and downloads queried products to a local directory. Currently, 
      the package is in an experimental state and only supports downloading raster files. 
      Other applications, such as zonal statistics or time-series of points are not supported, yet.
+     Disclaimer: This package is in not way associated with the WaPOR portal or the FAO.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
