@@ -152,6 +152,7 @@ wapor_queryRaster <- function(collection = NULL,
       if(length(dim_names)>0){ # only make new dimension variable when there are dimensions
         dimensions = as.list(dim_grid[i,])
         names(dimensions) = names(dim_grid)
+        attr(dimensions, "out.attrs") = NULL
       }
 
       if(class(timesteps) == "character"){
@@ -163,7 +164,7 @@ wapor_queryRaster <- function(collection = NULL,
         }
         date_name = paste(date_name, temp_dim, sep = "_")
         if(length(dim_names)>0){
-          tmp_filename = paste(product, paste(unlist(dimensions), date_name, sep = "_"), "clipped.tif", sep = "_")
+          tmp_filename = paste(product, paste(unlist(dimensions), collapse = "_"), date_name, "clipped.tif", sep = "_")
           outname = paste0(file.path(outdir, paste(product, paste(unlist(dimensions), collapse = "_"), date_name, sep = "_")), ".tif")
         } else {
           tmp_filename = paste(product, date_name, "clipped.tif", sep = "_")
