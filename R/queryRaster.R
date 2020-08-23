@@ -267,7 +267,7 @@ wapor_queryRaster <- function(collection = NULL,
         }
 
         if(job_status == "COMPLETED WITH ERRORS"){
-          check_status(job_response)
+          stop("API returned: COMPLETED WITH ERRORS")
         } else {
           job_response = GET(job_url,
                              add_headers(Accept = "application/json",

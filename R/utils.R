@@ -41,13 +41,6 @@ check_status <- function(res){
               status_code(res),
               parsed$message))
   }
-  if(content(res)$response$status == "COMPLETED WITH ERRORS"){
-    parsed = content(res)
-    logs = parsed$response$log
-    stop(
-      sprintf("API completed with errors\n%s", logs[[(length(logs)-1)]])
-    )
-  }
 }
 
 #' Helper function to query an URL
