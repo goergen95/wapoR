@@ -81,12 +81,12 @@ for these collections:
 -  NATURAL\_EARTH
 
 To query the available products within the collections we can run
-\`wapor\_products(“<collection_name>”).
+\`wapor\_products(“<collection_name>”)\`.
 
 ```r
-    products = wapor_products("WAPOR_2")
-    length(products)
-     str(products[1:3], max.level = 2)
+products = wapor_products("WAPOR_2")
+length(products)
+str(products[1:3], max.level = 2)
 ```
     ## [1] 196
     
