@@ -74,7 +74,11 @@ In its current state, the package mainly supports products from the
 WAPOR collections. For some other collection it is also possible to
 query and download raster datasets. However, for some of the collections
 errors will be returned if queried. Currently, you might run into errors
-for these collections: - C2ATLAS - DLMF - NASA - NATURAL\_EARTH
+for these collections: 
+- C2ATLAS 
+-  DLMF 
+-  NASA 
+-  NATURAL\_EARTH
 
 To query the available products within the collections we can run
 \`wapor\_products(“<collection_name>”).
@@ -85,7 +89,7 @@ To query the available products within the collections we can run
      str(products[1:3], max.level = 2)
 ```
     ## [1] 196
-
+    
     ## List of 3
     ##  $ L1_GBWP_A:List of 2
     ##   ..$ product:'data.frame':  1 obs. of  3 variables:
@@ -105,7 +109,7 @@ objects, one called product the other one called meta. In the product
 object you will get some general information about the specific product.
 
 ```r
-kable(products[[1]]$product)
+products[[1]]$product
 ```
 
 <table>
@@ -155,7 +159,7 @@ methodology and data types.
 
 ```r
 str(products[[1]]$meta)
-`` 
+```
 
     ## 'data.frame':    1 obs. of  12 variables:
     ##  $ format                : chr "Raster Dataset"
