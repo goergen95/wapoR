@@ -147,13 +147,14 @@ wapor_queryRaster <- function(collection = NULL,
     dim_grid = data.frame(empty = "frame") # create empty data frame in case there is no dimension
   }
 
-  for(step in timesteps){ # iterate through time steps
-    for(i in 1:nrow(dim_grid)){ # iterate through dimension grid
-      if(length(dim_names)>0){ # only make new dimension variable when there are dimensions
-        dimensions = as.list(dim_grid[i,])
-        names(dimensions) = names(dim_grid)
-        attr(dimensions, "out.attrs") = NULL
-      }
+  for(i in 1:nrow(dim_grid)){ # iterate through dimension grid
+    if(length(dim_names)>0){ # only make new dimension variable when there are dimensions
+      dimensions = as.list(dim_grid[i,])
+      names(dimensions) = names(dim_grid)
+      attr(dimensions, "out.attrs") = NULL
+    }
+
+    for(step in timesteps){ # iterate through time steps
 
       if(class(timesteps) == "character"){
         date_name  = as.Date(str_sub(step,2,11))
@@ -182,7 +183,10 @@ wapor_queryRaster <- function(collection = NULL,
       }
 
       # skip downlaod when file exists
-      if(file.exists(outname)) next
+      if(file.exists(outname)) {
+        message(paste0("File ", outname, " exists. Skip..."))
+        next
+      }
 
       # prepare dimension block of query json
       params = list()
@@ -280,6 +284,7 @@ wapor_queryRaster <- function(collection = NULL,
                                             "Content-type" = "application/json;charset=UTF-8"),
               ua,
               write_disk(outname, overwrite = T))
+          message(paste0("File ", outname, " sucessfully downloaded."))
         }
       } else { # if status different from 200
         check_status(response)
