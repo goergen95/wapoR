@@ -114,7 +114,7 @@ wapor_queryRaster <- function(collection = NULL,
          Check the dimension output of wapor_productMETA() and change your input.")
     }
   }
-  measure = as.charachter(metadata$info$code)
+  measure = as.character(metadata$info$code)
 
   # get requested timesteps in case there is a time variable
   if(!is.null(begin)){
