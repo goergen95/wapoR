@@ -107,14 +107,14 @@ wapor_queryRaster <- function(collection = NULL,
     }
   }
 
-  dim_names = dim_names[!dim_names %in% tmp_vars]
+  dim_names = as.character(dim_names[!dim_names %in% tmp_vars])
   if(length(dim_names) > 0){
     if(!any(names(dimensions) %in% dim_names)){
       stop("There are non matching dimensions specified in the 'dimensions' option.
          Check the dimension output of wapor_productMETA() and change your input.")
     }
   }
-  measure = metadata$info$code
+  measure = as.charachter(metadata$info$code)
 
   # get requested timesteps in case there is a time variable
   if(!is.null(begin)){
@@ -190,7 +190,7 @@ wapor_queryRaster <- function(collection = NULL,
 
       # prepare dimension block of query json
       params = list()
-      if(length(dim_names>0)){
+      if(length(dim_names)>0){
         for(x in 1:length(dimensions)){
           value = dimensions[[x]]
           code = names(dimensions[x])
