@@ -88,7 +88,7 @@ wapor_queryRaster <- function(collection = NULL,
   tmp_vars = c("YEAR", "MONTH", "DEKAD")
 
   # get product meta data
-  metadata = wapor_productMETA(collection, product)
+  metadata = wapor_metadata(collection, product)
   dim_names = metadata$dimensions$code
   if(!any(dim_names %in% tmp_vars)){
     if(!any(is.null(begin), is.null(end))){
@@ -111,7 +111,7 @@ wapor_queryRaster <- function(collection = NULL,
   if(length(dim_names) > 0){
     if(!any(names(dimensions) %in% dim_names)){
       stop("There are non matching dimensions specified in the 'dimensions' option.
-         Check the dimension output of wapor_productMETA() and change your input.")
+         Check the dimension output of wapor_metadata()$dimensions and change your input.")
     }
   }
   measure = as.character(metadata$info$code)

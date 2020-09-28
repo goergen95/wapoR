@@ -65,10 +65,10 @@ wapor_products <-function(collection){
 #' @param product A length one character vector specifying the product..
 #'
 #' @return A list object with the obhects \code{info}, \code{dimensions}, and \code{meta}.
-#' @export wapor_productMETA
+#' @export wapor_metadata
 #'
 #' @importFrom stringr str_remove_all
-wapor_productMETA <- function(collection, product){
+wapor_metadata <- function(collection, product){
 
   url = paste(dataurl, collection, "cubes", product, "measures", sep = "/")
   parsed = get_and_parse(url)
@@ -98,3 +98,4 @@ wapor_productMETA <- function(collection, product){
 
   list(info = info, dimensions = dimensions, meta = meta)
 }
+

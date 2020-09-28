@@ -2,7 +2,7 @@
 
 export(get_and_parse)
 export(wapor_collections)
-export(wapor_productMETA)
+export(wapor_metadata)
 export(wapor_products)
 export(wapor_queryRaster)
 export(wapor_signin)

@@ -75,6 +75,7 @@ WAPOR collections. For some other collection it is also possible to
 query and download raster datasets. However, for some of the collections
 errors will be returned if queried. Currently, you might run into errors
 for these collections: 
+
 - C2ATLAS 
 -  DLMF 
 -  NASA 
@@ -172,8 +173,8 @@ str(products[[1]]$meta)
     ##  $ spatialReferenceSystem: chr "EPSG:4326 - WGS84 - Geographic Coordinate System (lat/long)"
     ##  $ temporalResolution    : chr "from January 2009 to present"
     ##  $ temporalExtent        : chr "Annual"
-    ##  $ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of"| __truncated__
-    ##  $ methodology           : chr "The calculation of gross biomass water productivity (GBWP) is as follows: GBWP = TBP/ETIa Where TBP is annual T"| __truncated__
+    ##  $ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad."| __truncated__
+    ##  $ methodology           : chr "The calculation of gross biomass water productivity (GBWP) is as follows: GBWP ="| __truncated__
 
 
 With these information combined, we can start downloading some data.
