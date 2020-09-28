@@ -88,7 +88,7 @@ collection = "WAPOR_2"
 product = "L2_GBWP_S" # product code
 begin = as.Date("2015-01-01") # begin date is inclusive
 end = as.Date("2016-01-01") # end date is exclusive
-dimensions = list(SEASON = "S1") # GBWP only has dimension SEASON - S1 and S2
+dimensions = list(SEASON = c("S1", "S2")) # GBWP only has dimension SEASON - S1 and S2
 key = "<your_personal_API_Key" # can be obtained in the profile section of the WAPOR website 
                               # at https://wapor.apps.fao.org
 
